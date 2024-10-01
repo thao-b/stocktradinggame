@@ -13,6 +13,7 @@ def begin():
             return load()
         else:
             print('choose "new" or "continue" only')
+            begin()
 
 
 # new game file
@@ -45,6 +46,10 @@ def load():
         # while true, try, except, and return in load() function is used to catch if there is no saved file exists
         except FileNotFoundError:
             print('No Saved File. Please select new!')
+        
+        else:
+            print(portfolio)
+            transaction()
 
         return begin()
     
@@ -52,6 +57,7 @@ def load():
 # close = saves and close file/game
 def close():
     save()
+    exit()
 
 
 # view portfolio
@@ -66,18 +72,21 @@ def buy():
     price = input('buying price? ')
     if portfolio.get('funds') - float(float(price)*float(quantity)) < 0: # <-- make sure we have funds to buy the stock
         print('Insufficient funds')
+        print(portfolio)
         transaction()
     elif ticker in portfolio:
         portfolio[ticker] = portfolio.get(ticker) + int(quantity) # <-- adds quantity to stock already in portfolio
         portfolio['funds'] = portfolio.get('funds') - float(float(price)*float(quantity)) # <-- subtracts money from our funds
         print('quantity updated')
         save()
+        print(portfolio)
         transaction()
     else:
         portfolio[ticker] = int(quantity) # <-- adds new stock to portfolio; append new key:value to dictionary
         portfolio['funds'] = portfolio.get('funds') - float(float(price)*float(quantity)) # <-- subtracts money from our funds
         print('quantity updated')
         save()
+        print(portfolio)
         transaction()
 
 # our sell function. still need to fix so we can't sell funds itself.
@@ -87,6 +96,7 @@ def sell():
         quantity = input('selling quantity? ')
         if portfolio.get(ticker) - int(quantity) < 0: # <-- checks to see if we own the quantity of stock to sell
             print('insufficient stock quantity')
+            print(portfolio)
             transaction()
         elif portfolio.get(ticker) - int(quantity) == 0: # <-- if selling all quantity of said stock
             price = input('selling price? ')
@@ -94,6 +104,7 @@ def sell():
             del portfolio[ticker] # <-- removing the stock from portfolio
             print('sale successful')
             save()
+            print(portfolio)
             transaction()
         else:
             price = input('selling price? ')
@@ -101,9 +112,11 @@ def sell():
             portfolio['funds'] = portfolio.get('funds') + float(float(price)*float(quantity))# <-- adds money to our funds
             print('sale successful')
             save()
+            print(portfolio)
             transaction()
     else:
         print("Don't own stock")
+        print(portfolio)
         transaction()
 
 
@@ -120,6 +133,7 @@ def transaction():
         return close()
     else:
         print('Please select only one of the following...')
+        print(portfolio)
         transaction()
 
 # testing our function
@@ -135,5 +149,3 @@ begin()
 print(portfolio)
 
 transaction()
-
-print(portfolio)
